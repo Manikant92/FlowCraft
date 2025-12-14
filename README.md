@@ -378,10 +378,3 @@ This is a hackathon project. Feel free to fork and extend!
 
 MIT License
 
-## � Acknowledgments
-
-Built for the WeMakeDev AssembleAll Hackathon 2025.
-
----
-
-**Note**: This is an MVP focusing on workflow orchestration and explainability, not a full automation platform. The execution is simulated for demonstration purposes.
