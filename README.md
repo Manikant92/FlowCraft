@@ -2,6 +2,9 @@
 
 An intelligent workflow creation platform that converts natural language descriptions into structured, executable workflows with transparent AI reasoning.
 
+### Deployed URL
+Vist [Flowcraft](https://flow-craft-delta-mocha.vercel.app/)
+
 ## 🎯 Overview
 
 This is a **hackathon MVP** that demonstrates an agent-driven workflow builder. Unlike full automation platforms like Zapier or n8n, this focuses on **explainability and orchestration** - showing *why* each workflow step exists and how the agent reasoned about the workflow structure.
