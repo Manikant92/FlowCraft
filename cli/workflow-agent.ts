@@ -18,9 +18,16 @@ import * as path from 'path';
 const WORKFLOWS_DIR = path.join(process.cwd(), '.workflows');
 const LAST_WORKFLOW_FILE = path.join(WORKFLOWS_DIR, 'last.json');
 
-// Ensure workflows directory exists
-if (!fs.existsSync(WORKFLOWS_DIR)) {
-  fs.mkdirSync(WORKFLOWS_DIR, { recursive: true });
+// Ensure workflows directory exists (only for CLI, not for serverless)
+function ensureWorkflowsDir() {
+  try {
+    if (!fs.existsSync(WORKFLOWS_DIR)) {
+      fs.mkdirSync(WORKFLOWS_DIR, { recursive: true });
+    }
+  } catch (error) {
+    // Ignore errors in serverless environment
+    console.warn('Cannot create workflows directory (serverless environment)');
+  }
 }
 
 interface CLIResult {
@@ -66,13 +73,19 @@ async function createWorkflow(description: string): Promise<CLIResult> {
       logs.push(`     └─ ${step.description}`);
     });
     
-    // Save workflow
-    const workflowPath = path.join(WORKFLOWS_DIR, `${workflow.id}.json`);
-    fs.writeFileSync(workflowPath, JSON.stringify(workflow, null, 2));
-    fs.writeFileSync(LAST_WORKFLOW_FILE, JSON.stringify(workflow, null, 2));
-    
-    logs.push('');
-    logs.push(`💾 Workflow saved: ${workflow.id}`);
+    // Save workflow (skip in serverless environment)
+    try {
+      ensureWorkflowsDir();
+      const workflowPath = path.join(WORKFLOWS_DIR, `${workflow.id}.json`);
+      fs.writeFileSync(workflowPath, JSON.stringify(workflow, null, 2));
+      fs.writeFileSync(LAST_WORKFLOW_FILE, JSON.stringify(workflow, null, 2));
+      logs.push('');
+      logs.push(`💾 Workflow saved: ${workflow.id}`);
+    } catch (error) {
+      // Silently skip file saving in serverless environment
+      logs.push('');
+      logs.push(`ℹ️  Workflow ready (file saving skipped in serverless)`);
+    }
     
     return {
       success: true,
